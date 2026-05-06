@@ -25,16 +25,20 @@ class WobblyStickyNote extends StatelessWidget {
       child: CustomPaint(
         painter: _StickyNotePainter(color: color),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          width: 220,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          width: 180,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (icon != null) ...[
-                    icon!,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2.0),
+                      child: SizedBox(width: 30, height: 30, child: icon!),
+                    ),
                     const SizedBox(width: 8),
                   ],
                   Expanded(
@@ -53,21 +57,26 @@ class WobblyStickyNote extends StatelessWidget {
               const SizedBox(height: 16),
               Row(
                 children: [
-                  _buildPill(
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.access_time, size: 12, color: Colors.black54),
-                        const SizedBox(width: 4),
-                        Text(
-                          time,
-                          style: GoogleFonts.patrickHand(
-                            color: Colors.black54,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
+                  Flexible(
+                    child: _buildPill(
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.access_time, size: 12, color: Colors.black54),
+                          const SizedBox(width: 4),
+                          Flexible(
+                            child: Text(
+                              time,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.patrickHand(
+                                color: Colors.black54,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -112,27 +121,14 @@ class _StickyNotePainter extends CustomPainter {
 
     double wobble() => (random.nextDouble() - 0.5) * 10;
 
-    // Start point
     path.moveTo(wobble(), wobble());
-    
-    // Top edge
     path.quadraticBezierTo(size.width * 0.5 + wobble(), wobble() * 2, size.width + wobble(), wobble());
-    
-    // Right edge
     path.quadraticBezierTo(size.width + wobble() * 2, size.height * 0.5 + wobble(), size.width + wobble(), size.height + wobble());
-    
-    // Bottom edge
     path.quadraticBezierTo(size.width * 0.5 + wobble(), size.height + wobble() * 2, wobble(), size.height + wobble());
-    
-    // Left edge
     path.quadraticBezierTo(wobble() * 2, size.height * 0.5 + wobble(), wobble(), wobble());
-    
     path.close();
 
-    // Draw the main shape
     canvas.drawPath(path, paint);
-    
-    // Draw the border
     canvas.drawPath(path, borderPaint);
   }
 
