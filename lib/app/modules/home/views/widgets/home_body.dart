@@ -31,15 +31,20 @@ class HomeBody extends GetView<HomeController> {
               SizedBox(
                 height: 1200,
                 width: double.infinity,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    ..._buildArrows(),
-                    ...controller.tasks.map(
-                      (task) => _buildDraggableTask(task),
-                    ),
-                  ],
-                ),
+                child: Obx(() {
+                  if (controller.tasks.isEmpty) {
+                    return _buildEmptyState();
+                  }
+                  return Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      ..._buildArrows(),
+                      ...controller.tasks.map(
+                        (task) => _buildDraggableTask(task),
+                      ),
+                    ],
+                  );
+                }),
               ),
               const SizedBox(height: 140),
             ],
@@ -156,6 +161,33 @@ class HomeBody extends GetView<HomeController> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: 40),
+          // Flower Icon
+          const Icon(Icons.local_florist, size: 120, color: Color(0xFFFFD166)),
+          const SizedBox(height: 40),
+          Text(
+            "You've got a quite day today.. 🐰",
+            style: GoogleFonts.patrickHand(
+              color: Colors.white70,
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            "Rest and recharge",
+            style: GoogleFonts.patrickHand(color: Colors.white38, fontSize: 20),
+          ),
+        ],
       ),
     );
   }
