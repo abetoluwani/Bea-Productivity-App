@@ -92,7 +92,7 @@ class WobblyStickyNote extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.05),
+        color: Colors.black.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
       ),
       child: child,
@@ -112,12 +112,12 @@ class _StickyNotePainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     final borderPaint = Paint()
-      ..color = Colors.black.withOpacity(0.2)
+      ..color = Colors.black.withValues(alpha: 0.2)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
 
     final path = Path();
-    final random = Random(color.value + 100);
+    final random = Random(color.toARGB32() + 100);
 
     double wobble() => (random.nextDouble() - 0.5) * 10;
 

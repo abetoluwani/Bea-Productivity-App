@@ -29,7 +29,7 @@ class HomeBody extends GetView<HomeController> {
               _buildFilterChips(),
               vSpace(30),
               SizedBox(
-                height: 1000,
+                height: 1200,
                 width: double.infinity,
                 child: Stack(
                   clipBehavior: Clip.none,
@@ -82,7 +82,7 @@ class HomeBody extends GetView<HomeController> {
           key: ValueKey('arrow_${startTask.id}_${endTask.id}'),
           start: gapStart,
           end: gapEnd,
-          color: Colors.pinkAccent.withOpacity(0.25),
+          color: Colors.pinkAccent.withValues(alpha: 0.25),
         ),
       );
     }
@@ -103,34 +103,36 @@ class HomeBody extends GetView<HomeController> {
   Widget _buildDraggableTask(TaskModel task) {
     return Obx(
       () => Positioned(
-        key: ValueKey(task.id),  
+        key: ValueKey(task.id),
         left: task.position.value.dx,
         top: task.position.value.dy,
-        child: GestureDetector(
-          onPanStart: (_) {
-            controller.setDragging(true);
-            controller.moveToTop(
-              task.id,
-            );  
-          },
-          onPanEnd: (_) => controller.setDragging(false),
-          onPanCancel: () => controller.setDragging(false),
-          onPanUpdate: (details) {
-            controller.updateTaskPosition(task.id, details.delta);
-          },
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              WobblyStickyNote(
-                task: task.task,
-                time: task.time,
-                color: task.color,
-                rotation: task.rotation,
-                icon: Icon(task.icon, color: Colors.black87, size: 30),
-              ),
-              if (task.id == '2')
-                const Positioned(top: -30, right: 20, child: Butterfly()),
-            ],
+        child: Listener(
+          onPointerDown: (_) => controller.setDragging(true),
+          onPointerUp: (_) => controller.setDragging(false),
+          onPointerCancel: (_) => controller.setDragging(false),
+          child: GestureDetector(
+            onPanStart: (_) {
+              controller.moveToTop(task.id);
+            },
+            onPanEnd: (_) => controller.setDragging(false),
+            onPanCancel: () => controller.setDragging(false),
+            onPanUpdate: (details) {
+              controller.updateTaskPosition(task.id, details.delta);
+            },
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                WobblyStickyNote(
+                  task: task.task,
+                  time: task.time,
+                  color: task.color,
+                  rotation: task.rotation,
+                  icon: Icon(task.icon, color: Colors.black87, size: 30),
+                ),
+                if (task.id == '2')
+                  const Positioned(top: -30, right: 20, child: Butterfly()),
+              ],
+            ),
           ),
         ),
       ),

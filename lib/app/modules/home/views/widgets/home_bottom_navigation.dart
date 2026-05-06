@@ -1,5 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:bea/app/routes/app_pages.dart';
 
 class HomeBottomNavigation extends StatelessWidget {
   const HomeBottomNavigation({super.key});
@@ -22,9 +24,12 @@ class HomeBottomNavigation extends StatelessWidget {
         ),
 
         // Right Action Pill
-        _buildLiquidGlassPill(
-          isCircle: true,
-          child: _buildNavIcon(Icons.add, size: 28),
+        GestureDetector(
+          onTap: () => Get.toNamed(Routes.ADD_TASK),
+          child: _buildLiquidGlassPill(
+            isCircle: true,
+            child: _buildNavIcon(Icons.add, size: 28),
+          ),
         ),
       ],
     );
@@ -44,12 +49,15 @@ class HomeBottomNavigation extends StatelessWidget {
         filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.08),
+            color: Colors.white.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(isCircle ? 40 : 32),
-            border: Border.all(color: Colors.white.withOpacity(0.12), width: 1),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.12),
+              width: 1,
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),

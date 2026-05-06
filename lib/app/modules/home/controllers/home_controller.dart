@@ -26,7 +26,8 @@ class TaskModel {
 
 class HomeController extends GetxController {
   final tasks = <TaskModel>[].obs;
-  final List<String> taskOrder = ['1', '2', '3', '4'];
+  // Logical order for zigzag connections
+  final List<String> taskOrder = ['1', '2', '3', '4', '5', '6'];
   final isDragging = false.obs;
 
   @override
@@ -52,7 +53,7 @@ class HomeController extends GetxController {
         time: "02pm - 03:30pm   in 1hr",
         color: AppColours.noteYellow,
         icon: Icons.phone_android,
-        initialPosition: const Offset(150, 180),
+        initialPosition: const Offset(170, 180),
         rotation: 0.05,
       ),
       TaskModel(
@@ -61,7 +62,7 @@ class HomeController extends GetxController {
         time: "04pm - 04:30pm",
         color: AppColours.notePink,
         icon: Icons.tablet_mac,
-        initialPosition: const Offset(10, 400),
+        initialPosition: const Offset(20, 340),
         rotation: -0.03,
       ),
       TaskModel(
@@ -70,8 +71,26 @@ class HomeController extends GetxController {
         time: "05pm - 05:30pm",
         color: AppColours.notePurple,
         icon: Icons.palette,
-        initialPosition: const Offset(140, 620),
+        initialPosition: const Offset(170, 500),
         rotation: 0.02,
+      ),
+      TaskModel(
+        id: '5',
+        task: "Fix spacing issues on\ndashboard",
+        time: "08pm - 08:30pm   in 3hr 20m",
+        color: const Color(0xFFFFC0CB), // Light pink
+        icon: Icons.straighten,
+        initialPosition: const Offset(20, 660),
+        rotation: -0.04,
+      ),
+      TaskModel(
+        id: '6',
+        task: "Stretch for 10 minutes",
+        time: "10pm - 10:10pm",
+        color: const Color(0xFFFFA07A), // Light salmon
+        icon: Icons.accessibility_new,
+        initialPosition: const Offset(170, 820),
+        rotation: 0.03,
       ),
     ]);
   }
