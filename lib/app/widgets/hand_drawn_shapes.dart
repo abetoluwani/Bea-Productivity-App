@@ -31,7 +31,6 @@ class _FlowerPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 4;
 
-    // Draw petals
     for (int i = 0; i < 5; i++) {
       final angle = i * 2 * pi / 5;
       final petalCenter = Offset(
@@ -41,24 +40,44 @@ class _FlowerPainter extends CustomPainter {
       canvas.drawCircle(petalCenter, radius, paint);
     }
 
-    // Draw center
     canvas.drawCircle(center, radius * 0.8, Paint()..color = Colors.yellow);
     canvas.drawCircle(center, radius * 0.8, paint);
 
-    // Draw face
-    final eyePaint = Paint()..color = Colors.black..style = PaintingStyle.fill;
-    canvas.drawCircle(center.translate(-radius * 0.3, -radius * 0.1), 2, eyePaint);
-    canvas.drawCircle(center.translate(radius * 0.3, -radius * 0.1), 2, eyePaint);
-    
+    final eyePaint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(
+      center.translate(-radius * 0.3, -radius * 0.1),
+      2,
+      eyePaint,
+    );
+    canvas.drawCircle(
+      center.translate(radius * 0.3, -radius * 0.1),
+      2,
+      eyePaint,
+    );
+
     final mouthPath = Path()
-      ..addArc(Rect.fromCircle(center: center.translate(0, 2), radius: radius * 0.4), 0.2, pi - 0.4);
+      ..addArc(
+        Rect.fromCircle(center: center.translate(0, 2), radius: radius * 0.4),
+        0.2,
+        pi - 0.4,
+      );
     canvas.drawPath(mouthPath, paint..strokeWidth = 2);
 
-    // Draw stem
-    final stemPaint = Paint()..color = Colors.green..strokeWidth = 4..style = PaintingStyle.stroke..strokeCap = StrokeCap.round;
+    final stemPaint = Paint()
+      ..color = Colors.green
+      ..strokeWidth = 4
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
     final stemPath = Path()
       ..moveTo(center.dx, center.dy + radius * 2)
-      ..quadraticBezierTo(center.dx - 10, center.dy + radius * 4, center.dx, center.dy + radius * 6);
+      ..quadraticBezierTo(
+        center.dx - 10,
+        center.dy + radius * 4,
+        center.dx,
+        center.dy + radius * 6,
+      );
     canvas.drawPath(stemPath, stemPaint);
   }
 
@@ -71,7 +90,12 @@ class SquigglyArrow extends StatelessWidget {
   final Offset end;
   final Color color;
 
-  const SquigglyArrow({super.key, required this.start, required this.end, this.color = Colors.white54});
+  const SquigglyArrow({
+    super.key,
+    required this.start,
+    required this.end,
+    this.color = Colors.white54,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -86,32 +110,50 @@ class _SquigglyArrowPainter extends CustomPainter {
   final Offset end;
   final Color color;
 
-  _SquigglyArrowPainter({required this.start, required this.end, required this.color});
+  _SquigglyArrowPainter({
+    required this.start,
+    required this.end,
+    required this.color,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2
+      ..strokeWidth = 2.5
       ..strokeCap = StrokeCap.round;
 
     final path = Path();
     path.moveTo(start.dx, start.dy);
-    
-    final midX = (start.dx + end.dx) / 2;
-    final midY = (start.dy + end.dy) / 2;
-    
-    path.quadraticBezierTo(midX + 20, midY - 20, end.dx, end.dy);
-    
-    // Draw arrowhead
-    final angle = atan2(end.dy - start.dy, end.dx - start.dx);
-    path.moveTo(end.dx, end.dy);
-    path.lineTo(end.dx - 10 * cos(angle - pi / 6), end.dy - 10 * sin(angle - pi / 6));
-    path.moveTo(end.dx, end.dy);
-    path.lineTo(end.dx - 10 * cos(angle + pi / 6), end.dy - 10 * sin(angle + pi / 6));
+
+    final dx = end.dx - start.dx;
+    final dy = end.dy - start.dy;
+
+    final midY = start.dy + dy * 0.5;
+    final cp1 = Offset(start.dx + dx * 0.1, midY);
+    final cp2 = Offset(end.dx - dx * 0.1, midY);
+
+    path.cubicTo(cp1.dx, cp1.dy, cp2.dx, cp2.dy, end.dx, end.dy);
 
     canvas.drawPath(path, paint);
+
+    final angle = atan2(end.dy - cp2.dy, end.dx - cp2.dx);
+    final arrowPath = Path();
+
+    const double arrowSize = 16.0;
+    arrowPath.moveTo(end.dx, end.dy);
+    arrowPath.lineTo(
+      end.dx - arrowSize * cos(angle - pi / 7),
+      end.dy - arrowSize * sin(angle - pi / 7),
+    );
+    arrowPath.moveTo(end.dx, end.dy);
+    arrowPath.lineTo(
+      end.dx - arrowSize * cos(angle + pi / 7),
+      end.dy - arrowSize * sin(angle + pi / 7),
+    );
+
+    canvas.drawPath(arrowPath, paint..strokeWidth = 2.5);
   }
 
   @override
@@ -124,10 +166,7 @@ class Butterfly extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size(size, size),
-      painter: _ButterflyPainter(),
-    );
+    return CustomPaint(size: Size(size, size), painter: _ButterflyPainter());
   }
 }
 
@@ -141,22 +180,38 @@ class _ButterflyPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     final center = Offset(size.width / 2, size.height / 2);
-    
-    // Draw wings (loops)
+
     final path = Path();
     path.moveTo(center.dx, center.dy);
-    path.cubicTo(center.dx - 15, center.dy - 15, center.dx - 15, center.dy + 15, center.dx, center.dy);
-    path.cubicTo(center.dx + 15, center.dy - 15, center.dx + 15, center.dy + 15, center.dx, center.dy);
-    
-    canvas.drawPath(path, paint);
-    
-    // Draw body
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(Rect.fromCenter(center: center, width: 4, height: 12), const Radius.circular(2)),
-      Paint()..color = Colors.yellow..style = PaintingStyle.fill,
+    path.cubicTo(
+      center.dx - 15,
+      center.dy - 15,
+      center.dx - 15,
+      center.dy + 15,
+      center.dx,
+      center.dy,
     );
-    
-    // Draw hat
+    path.cubicTo(
+      center.dx + 15,
+      center.dy - 15,
+      center.dx + 15,
+      center.dy + 15,
+      center.dx,
+      center.dy,
+    );
+
+    canvas.drawPath(path, paint);
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromCenter(center: center, width: 4, height: 12),
+        const Radius.circular(2),
+      ),
+      Paint()
+        ..color = Colors.yellow
+        ..style = PaintingStyle.fill,
+    );
+
     final hatPath = Path()
       ..moveTo(center.dx - 4, center.dy - 6)
       ..lineTo(center.dx + 4, center.dy - 6)
